@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # SCRAPING DU PREMIER PRODUIT LA PAGE N°1
 url = 'http://books.toscrape.com/'
