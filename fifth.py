@@ -2,6 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+# definir constante html.parser
+
+
+
 url = 'http://books.toscrape.com/'
 
 page = requests.get(url)
@@ -59,12 +63,20 @@ for page in range(1, nb_total_pages + 1):
           availability = soup.find('table', class_='table table-striped').findAll('td')[5].text
           number_of_reviews = soup.find('table', class_='table table-striped').findAll('td')[6].text
          
-     # stocké les données dans un fichier csv
+     # création header csv
+     with open('books.csv', 'w') as csv_file:
+          writer = csv.writer(csv_file)
+          writer.writerow(['title', 'image', 'rating', 'price', 'stock', 'link', 'upc', 'product_type',
+                              'price_excluding_tax', 'price_including_tax', 'tax', 'availability', 'number_of_reviews'])
      
-          with open('books.csv', 'a') as csv_file:
-               writer = csv.writer(csv_file)
-               writer.writerow([title, image, rating, price, stock, link, upc, product_type, price_excluding_tax, price_including_tax, tax, availability, number_of_reviews])
-          print('---------------------------------------')
+     with open('books.csv', 'a') as csv_file:
+
+         writer = csv.writer(csv_file)
+         writer.writerow([title, image, rating, price, stock, link, upc, product_type,
+                          price_excluding_tax, price_including_tax, tax, availability, number_of_reviews])
+         csv_file.close()
+
+# création header csv
 
 
          
