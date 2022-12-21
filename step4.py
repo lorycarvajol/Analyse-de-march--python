@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
 url = "http://books.toscrape.com/index.html"
 page = requests.get(url)
 soup = BeautifulSoup(page.content, 'html.parser')
 
 
-images = soup.find_all('img')
-for image in images:
-    print(image['src'])
+# créer un dossier nommé categorie à la racine du projet
+
+os.mkdir("test")
