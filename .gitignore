@@ -1,11 +1,8 @@
-# Dossier pour csv
-/csv_files
-
 # Fichiers CSV
 *.csv
 
 # Dossier des images
-/pictures
+images
 
 # Images
 *.jpg

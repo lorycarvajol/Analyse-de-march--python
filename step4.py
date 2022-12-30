@@ -8,56 +8,28 @@ page = requests.get(url)
 soup = BeautifulSoup(page.content, 'html.parser')
 
 
-categories = soup.find('ul', class_='nav nav-list').find_all('li')
-categories_urls = []
-for category in categories:
-    categories_urls.append('http://books.toscrape.com/' +
-                           category.find('a')['href'])
+def get_book_images_urls():
+    book_images_urls = []
+    for page_number in range(1, 51):
+        page_url = 'http://books.toscrape.com/catalogue/page-' + \
+            str(page_number) + '.html'
+        page = requests.get(page_url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        book_images = soup.find_all('img')
+        for book_image in book_images:
+            book_images_urls.append(book_image['src'])
+    return book_images_urls
 
 
-# get all books urls from a category
+def download_book_images():
+    book_images_urls = get_book_images_urls()
+    if not os.path.exists('images'):
+        os.makedirs('images')
+    for book_image_url in book_images_urls:
+        book_image = requests.get(
+            'http://books.toscrape.com/' + book_image_url)
+        with open('images/' + book_image_url.split('/')[-1], 'wb') as f:
+            f.write(book_image.content)
 
 
-def get_books_urls(category_url):
-    page = requests.get(category_url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    books = soup.find_all('h3')
-    books_urls = []
-    for book in books:
-        books_urls.append('http://books.toscrape.com/catalogue/' +
-                          book.find('a')['href'].replace('../', ''))
-    return books_urls
-
-
-# scrape book info from a book url
-
-
-def get_book_info(url):
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    title = soup.find('h1').text
-    image_url = soup.find('div', class_='item active').find(
-        'img')['src']
-
-    return [url, title,  image_url]
-
-# create a folder for each category and download all books images in it
-
-
-for category_url in categories_urls:
-    page = requests.get(category_url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    category_name = soup.find('li', class_='active').text
-    books_urls = get_books_urls(category_url)
-    for book_url in books_urls:
-        book_info = get_book_info(book_url)
-        image_url = book_info[2]
-        image_name = image_url.split('/')[-1]
-        if not os.path.exists('categories/' + category_name):
-            os.makedirs('categories/' + category_name)
-        with open('categories/' + category_name + '/' + image_name, 'wb') as f:
-            f.write(requests.get(image_url).content)
-
-
-# if not os.path.exists('categories/' + category_name):
-#     os.makedirs('categories/' + category_name)
+download_book_images()

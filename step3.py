@@ -16,9 +16,6 @@ for category in categories:
                            category.find('a')['href'])
 
 
-# get all books urls from a category
-
-
 def get_books_urls(category_url):
     page = requests.get(category_url)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -28,9 +25,6 @@ def get_books_urls(category_url):
         books_urls.append('http://books.toscrape.com/catalogue/' +
                           book.find('a')['href'].replace('../', ''))
     return books_urls
-
-
-# scrape book info from a book url
 
 
 def get_book_info(url):
@@ -43,8 +37,12 @@ def get_book_info(url):
     stock = stock.replace('In stock (', '')
     stock = stock.replace(' available)', '')
     stock = int(stock)
+
     description = soup.find(
-        'div', id='product_description').find_next_sibling('p').text
+        'div', id='product_description')
+    if description:
+        description = description.find_next_sibling('p').text
+
     category = soup.find('ul', class_='breadcrumb').find_all('li')[2].text
     upc = soup.find('td').text
     rating = soup.find('p', class_='star-rating')['class'][1]
@@ -69,21 +67,23 @@ def get_book_info(url):
         'image_url': image
     }
 
-# creation d'un dossier categories avec un fichier csv  par categorie
-
 
 for category_url in categories_urls:
     page = requests.get(category_url)
     soup = BeautifulSoup(page.content, 'html.parser')
     category_name = soup.find('li', class_='active').text
     books_urls = get_books_urls(category_url)
+    print(category_name)
+
     if not os.path.exists('categories/' + category_name):
         os.makedirs('categories/' + category_name)
-    with open('categories/' + category_name + '/books.csv', 'w', newline='') as csvfile:
+    with open('categories/' + category_name + '/books.csv', 'w', encoding='utf-8-sig', newline='') as csvfile:
         fieldnames = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax', 'price_excluding_tax',
                       'number_available', 'product_description', 'category', 'review_rating', 'image_url']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer = csv.DictWriter(
+            csvfile,  fieldnames=fieldnames)
         writer.writeheader()
         for book_url in books_urls:
+            print(book_url)
             book_info = get_book_info(book_url)
             writer.writerow(book_info)

@@ -32,7 +32,7 @@ def scrape_book_page(url):
     return [url, upc, title, price, price, stock, description, category, rating, image_url]
 
 
-url = "http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+url = "http://books.toscrape.com/catalogue/the-picture-of-dorian-gray_270/index.html"
 scrape_book_page(url)
 
 
