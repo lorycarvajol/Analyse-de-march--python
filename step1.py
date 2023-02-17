@@ -45,26 +45,3 @@ with open('books.csv', 'w', encoding='utf-8-sig', newline='') as f:
     writer.writerow(scrape_book_page(url))
 
 
-# ==============================================================================
-
-
-# url = "http://books.toscrape.com/catalogue/category/books/history_32/index.html"
-
-# page = requests.get(url)
-# soup = BeautifulSoup(page.content, 'html.parser')
-
-# books_urls = []
-# books = soup.find_all('h3')
-# for book in books:
-#     books_urls.append('http://books.toscrape.com/catalogue/' +
-#                       book.find('a')['href'].replace('../../', ''))
-# print(books_urls)
-
-# with open('books_history.csv', 'a', encoding='utf-8-sig', newline='') as f:
-
-#     writer = csv.writer(f)
-#     writer.writerow(['product_page_url', 'universal_product_code',
-#                      'title', 'price_including_tax', 'price_excluding_tax',
-#                      'number_available', 'product_description', 'category', 'review_rating', 'image_url'])
-#     for url in books_urls:
-#         writer.writerow(scrape_book_page(url))
